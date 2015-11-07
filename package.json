@@ -1,0 +1,27 @@
+{
+  "name": "node-stopwords-filter",
+  "version": "0.0.1",
+  "description": "Stopwords filter for Nodejs, Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/duyetdev/node-stopwords-filter.git"
+  },
+  "keywords": [
+    "stopwords",
+    "tokenzier",
+    "vietnamese",
+    "nlp",
+    "duyetdev",
+    "filter"
+  ],
+  "author": "Van-Duyet Le",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/duyetdev/node-stopwords-filter/issues"
+  },
+  "homepage": "https://github.com/duyetdev/node-stopwords-filter#readme"
+}
