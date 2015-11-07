@@ -41,6 +41,10 @@ f.setLanguage('vi');
 npm test
 ```
 
+# TODO
+
+* Tokenizer string for Vietnamese (See: https://github.com/duyetdev/node-vntokenizer)
+
 # How to contribute
 1. Fork the project on Github
 2. Create a topic branch for your changes
