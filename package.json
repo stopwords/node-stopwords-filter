@@ -4,7 +4,7 @@
   "description": "Stopwords filter for Nodejs, Javascript",
   "main": "index.js",
   "scripts": {
-    "test": "node test/test.js"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,13 @@
   "bugs": {
     "url": "https://github.com/duyetdev/node-stopwords-filter/issues"
   },
-  "homepage": "https://github.com/duyetdev/node-stopwords-filter#readme"
+  "homepage": "https://github.com/duyetdev/node-stopwords-filter#readme",
+  "dependencies": {
+    "node-vntokenizer": "0.0.2",
+    "stopwords": "0.0.5",
+    "vietnamese-stopwords": "0.0.2"
+  },
+  "devDependencies": {
+    "mocha": "^2.3.3"
+  }
 }
