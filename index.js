@@ -2,54 +2,74 @@
 
 ;(function() {
 
-  /** Used as a safe reference for `undefined` in pre-ES5 environments. */
-  var undefined;
+	/** Used as a safe reference for `undefined` in pre-ES5 environments. */
+	var undefined;
+	var root = this;
+	var has_require = typeof require !== 'undefined';
 
-  /** Detect free variable `exports`. */
-  var freeExports = (objectTypes[typeof exports] && exports && !exports.nodeType) ? exports : null;
+	var Tokenizer = require('node-vntokenizer');
+	var token = new Tokenizer();
 
-  /** Detect free variable `module`. */
-  var freeModule = (objectTypes[typeof module] && module && !module.nodeType) ? module : null;
+	var StopwordFilter = function(options) {
+		this.options = options || {};
+		this.language = this.options.language || this.options.lang || 'en';
 
-  /** Detect free variable `global` from Node.js. */
-  var freeGlobal = checkGlobal(freeExports && freeModule && typeof global == 'object' && global);
+		this.stopwords = [];
+		this.loadStopwordData(this.language);
+	}
 
-  /** Detect free variable `self`. */
-  var freeSelf = checkGlobal(objectTypes[typeof self] && self);
+	StopwordFilter.prototype.loadStopwordData = function(lang) {
+		var lang = lang || this.language || 'en';
 
-  /** Detect free variable `window`. */
-  var freeWindow = checkGlobal(objectTypes[typeof window] && window);
+		if (lang == 'vi' || lang == 'vn') {
+			this.stopwords = require('vietnamese-stopwords');
+		} else { // default: en
+			this.stopwords = require('stopwords').english
+		}
+	}
 
-  /** Detect the popular CommonJS extension `module.exports`. */
-  var moduleExports = (freeModule && freeModule.exports === freeExports) ? freeExports : null;
+	StopwordFilter.prototype.setStopwords = function(data) {
+		this.stopwords = data;
+	}
 
-  /** Detect `this` as the global object. */
-  var thisGlobal = checkGlobal(objectTypes[typeof this] && this);
+	StopwordFilter.prototype.setLanguage = function(lang) {
+		this.language = lang;
+		this.loadStopwordData();
+	}
 
-  /**
-   * Used as a reference to the global object.
-   *
-   * The `this` value is used if it's the global object to avoid Greasemonkey's
-   * restricted `window` object, otherwise the `window` object is used.
-   */
-  var root = freeGlobal || ((freeWindow !== (thisGlobal && thisGlobal.window)) && freeWindow) || freeSelf || thisGlobal || Function('return this')();
+	StopwordFilter.prototype.filter = function(text, outputType) {
+		var words = text;
 
-  var StopwordFilter = function(options) {
+		if (typeof text === 'string')
+			words = token.tokenize(text);
+		else if (typeof text !== 'array')
+			throw Error("Input string must be String or Array. Current: " + (typeof text));
 
-  }
+		var outputType = outputType || 'array';
 
-  StopwordFilter.prototype.setStopwords = function(data) {
-  	this.stopwords = data;
-  }
+        var keywords = [];
+        for (var i = 0; i < words.length; i++) {
+                var word = words[i].toLowerCase().trim();
+                if (this.stopwords.indexOf(word) === -1 && keywords.indexOf(word) === -1) {
+                        keywords.push(word);
+                }
+        }
 
-  // Export
-  (freeWindow || freeSelf || {}).ddSF = StopwordFilter;
+        // String output
+        if (outputType != 'array') {
+        	return keywords.join(' ');
+        }
+    
+        return keywords;
+	}
 
-	// Export for Node.js.
-    if (moduleExports) {
-      freeModule.exports = StopwordFilter;
-    }
-
-    // Export for a browser or Rhino.
-    root.StopwordFilter = StopwordFilter;
+	// Exports
+	if( typeof exports !== 'undefined' ) {
+		if( typeof module !== 'undefined' && module.exports ) {
+			exports = module.exports = StopwordFilter;
+		}
+		exports.StopwordFilter = StopwordFilter;
+	} else {
+		root.StopwordFilter = StopwordFilter;
+	}
 }.call(this));
